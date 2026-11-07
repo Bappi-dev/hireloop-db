@@ -3,8 +3,20 @@
 import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react"
+import { useRouter } from "next/navigation"
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  User,
+  Briefcase,
+  ShieldCheck,
+  ArrowRight,
+  Loader2,
+} from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,14 +32,47 @@ import { Separator } from "@/components/ui/separator"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "@/components/ui/toast"
 
+const ROLES = [
+  {
+    id: "Seeker" as const,
+    label: "Seeker",
+    description: "Looking for jobs",
+    icon: User,
+  },
+  {
+    id: "Recruiter" as const,
+    label: "Recruiter",
+    description: "Hiring talent",
+    icon: Briefcase,
+  },
+  {
+    id: "Admin" as const,
+    label: "Admin",
+    description: "Platform admin",
+    icon: ShieldCheck,
+  },
+]
+
+type UserRole = (typeof ROLES)[number]["id"]
+
 export default function SignUpPage() {
-  const [formData, setFormData] = React.useState({
+  const router = useRouter()
+  const [formData, setFormData] = React.useState<{
+    name: string
+    email: string
+    password: string
+    confirmPassword: string
+    role: UserRole
+  }>({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    role: "Seeker",
   })
   const [showPassword, setShowPassword] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [formError, setFormError] = React.useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -35,38 +80,109 @@ export default function SignUpPage() {
       ...prev,
       [name]: value,
     }))
+    if (formError) setFormError(null)
+  }
+
+  const handleRoleSelect = (role: UserRole) => {
+    setFormData((prev) => ({
+      ...prev,
+      role,
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Event handler collecting all form data
-    console.log("Sign Up Submitted:", formData)
-    const { data, error } = await authClient.signUp.email({
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      callbackURL: "/",
-    })
-    if (data) {
-      console.log(data)
+    setFormError(null)
+
+    if (formData.password !== formData.confirmPassword) {
+      const errorMsg = "Passwords do not match."
+      setFormError(errorMsg)
       toast.add({
-        description:"Sign Up Successfully!!",
-        type:"success"
+        title: "Validation Error",
+        description: errorMsg,
+        type: "error",
       })
+      return
     }
-    if (error) {
-      console.log(error)
+
+    if (formData.password.length < 8) {
+      const errorMsg = "Password must be at least 8 characters long."
+      setFormError(errorMsg)
+      toast.add({
+        title: "Validation Error",
+        description: errorMsg,
+        type: "error",
+      })
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      console.log("Submitting Sign Up Data to Better Auth:", formData)
+
+      const { data, error } = await authClient.signUp.email({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role, 
+        callbackURL: "/",
+      })
+
+      if (data) {
+        console.log("Sign up successful:", data)
+        toast.add({
+          title: "Account Created!",
+          description: `Welcome to HireLoop as a ${formData.role}!`,
+          type: "success",
+        })
+        router.push("/")
+      }
+
+      if (error) {
+        console.error("Sign up error:", error)
+        const message = error.message || "Failed to create account"
+        setFormError(message)
+        toast.add({
+          title: "Sign Up Failed",
+          description: message,
+          type: "error",
+        })
+      }
+    } catch (err: unknown) {
+      console.error("Unexpected error:", err)
+      const message =
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      setFormError(message)
+      toast.add({
+        title: "Error",
+        description: message,
+        type: "error",
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  const handleGoogleSignUp = () => {
-    console.log("Google Sign Up clicked")
-    // Ready for: authClient.signIn.social({ provider: "google" })
+  const handleGoogleSignUp = async () => {
+    try {
+      console.log("Initiating Google Sign Up...")
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      })
+    } catch (err: unknown) {
+      console.error("Google sign up error:", err)
+      toast.add({
+        title: "Google Sign-In Error",
+        description: "Failed to authenticate with Google.",
+        type: "error",
+      })
+    }
   }
 
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center overflow-hidden bg-background px-4 py-12 sm:px-6 lg:px-8">
-      {/* Background subtle radial glow */}
+      {/* Background radial glow */}
       <div
         className="pointer-events-none absolute inset-x-0 -top-40 -z-10 flex justify-center overflow-hidden"
         aria-hidden="true"
@@ -74,7 +190,7 @@ export default function SignUpPage() {
         <div className="h-[500px] w-[800px] rounded-full bg-indigo-600/10 blur-[130px] dark:bg-indigo-600/15" />
       </div>
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-lg">
         <Card className="border border-white/10 bg-card/80 shadow-2xl backdrop-blur-xl">
           <CardHeader className="space-y-2 text-center">
             <div className="mx-auto flex justify-center">
@@ -139,8 +255,65 @@ export default function SignUpPage() {
               </span>
             </div>
 
+            {/* Error Message Alert */}
+            {formError && (
+              <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs font-medium text-red-400">
+                {formError}
+              </div>
+            )}
+
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Role Selection Option */}
+              <div className="space-y-2">
+                <Label className="text-xs font-medium text-foreground">
+                  I want to join as
+                </Label>
+                <div
+                  className="grid grid-cols-3 gap-2 sm:gap-2.5"
+                  role="radiogroup"
+                  aria-label="Account role"
+                >
+                  {ROLES.map((role) => {
+                    const Icon = role.icon
+                    const isSelected = formData.role === role.id
+                    return (
+                      <button
+                        key={role.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        onClick={() => handleRoleSelect(role.id)}
+                        className={cn(
+                          "relative flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all duration-200 outline-none select-none",
+                          isSelected
+                            ? "border-indigo-500 bg-indigo-500/15 text-white shadow-sm shadow-indigo-500/25 ring-2 ring-indigo-500/50"
+                            : "border-white/10 bg-white/5 text-muted-foreground hover:border-white/20 hover:bg-white/10 hover:text-foreground"
+                        )}
+                      >
+                        <Icon
+                          className={cn(
+                            "size-5 transition-colors",
+                            isSelected
+                              ? "text-indigo-400"
+                              : "text-muted-foreground"
+                          )}
+                        />
+                        <span className="mt-1.5 text-xs font-semibold leading-tight">
+                          {role.label}
+                        </span>
+                        <span className="mt-0.5 line-clamp-1 text-[10px] text-muted-foreground">
+                          {role.description}
+                        </span>
+                        {isSelected && (
+                          <span className="absolute top-1.5 right-1.5 flex size-2 rounded-full bg-indigo-500" />
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
               {/* Full Name */}
               <div className="space-y-1.5">
                 <Label
@@ -206,7 +379,7 @@ export default function SignUpPage() {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Create a strong password"
+                    placeholder="At least 8 characters"
                     className="h-10 rounded-lg pr-10 pl-9 text-sm"
                   />
                   <button
@@ -250,12 +423,23 @@ export default function SignUpPage() {
                 </div>
               </div>
 
+              {/* Submit Button */}
               <Button
                 type="submit"
-                className="h-10 w-full justify-center gap-2 rounded-lg bg-indigo-600 font-medium text-white shadow-md shadow-indigo-600/30 transition-all hover:bg-indigo-500 hover:shadow-indigo-600/40 active:scale-[0.99]"
+                disabled={isLoading}
+                className="h-10 w-full justify-center gap-2 rounded-lg bg-indigo-600 font-medium text-white shadow-md shadow-indigo-600/30 transition-all hover:bg-indigo-500 hover:shadow-indigo-600/40 active:scale-[0.99] disabled:opacity-60"
               >
-                <span>Create Account</span>
-                <ArrowRight className="size-4" />
+                {isLoading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Create Account as {formData.role}</span>
+                    <ArrowRight className="size-4" />
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
