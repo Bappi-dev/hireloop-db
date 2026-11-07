@@ -110,6 +110,14 @@ export default function Banner() {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-transparent" />
           </div>
+
+          <div className="relative -mt-12 sm:-mt-20">
+            <p className="text-sm font-normal text-zinc-400 sm:text-base">
+              Assisting over{" "}
+              <span className="font-semibold text-white">15,000</span> job seekers
+              find their dream positions.
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -83,7 +83,7 @@ export function Navbar() {
             Sign In
           </Link>
           <Link
-            href="/get-started"
+            href="/sign-up"
             className={cn(
               buttonVariants({ size: "default" }),
               "h-9 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white shadow-sm shadow-indigo-500/25 transition-all duration-200 hover:bg-indigo-500 hover:shadow-indigo-500/35 active:scale-[0.98]"
@@ -96,7 +96,7 @@ export function Navbar() {
         {/* Mobile: Hamburger Drawer Trigger */}
         <div className="flex items-center gap-2 md:hidden">
           <Link
-            href="/get-started"
+            href="/sign-up"
             className={cn(
               buttonVariants({ size: "sm" }),
               "h-8 rounded-lg bg-indigo-600 px-3 text-xs font-medium text-white shadow-sm shadow-indigo-500/20 hover:bg-indigo-500"
@@ -179,7 +179,7 @@ export function Navbar() {
                     </Link>
 
                     <Link
-                      href="/get-started"
+                      href="/sign-up"
                       onClick={() => setIsOpen(false)}
                       className={cn(
                         buttonVariants(),
