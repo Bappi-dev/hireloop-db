@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Search, MapPin } from "lucide-react"
+import Imagehome from "@/app/assest/globe.png"
 
 import { Button } from "@/components/ui/button"
 
@@ -100,15 +101,13 @@ export default function Banner() {
         <div className="relative mt-16 w-full max-w-4xl">
           <div className="relative mx-auto aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-2xl">
             <Image
-              src="/globe.png"
+              src={Imagehome}
               alt="Global opportunities"
               fill
               className="object-cover object-top opacity-90 transition-opacity hover:opacity-100"
               priority
             />
             {/* Gradient overlays to blend smoothly into page */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-transparent" />
           </div>
 
           <div className="relative -mt-12 sm:-mt-20">

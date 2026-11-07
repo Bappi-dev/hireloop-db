@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Menu, Briefcase, Building2, CreditCard, LogIn, ArrowRight } from "lucide-react"
+import { Menu, Briefcase, Building2, CreditCard, LogIn, ArrowRight, ArrowLeftFromLine } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -16,6 +16,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
+import { authClient } from "@/lib/auth-client"
+import { ThemeToggle } from "@/components/ThemeToggle"
 
 const NAV_LINKS = [
   { name: "Browse Jobs", href: "/jobs", icon: Briefcase },
@@ -26,6 +28,14 @@ const NAV_LINKS = [
 export function Navbar() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = React.useState(false)
+
+  const { data: session } = authClient.useSession()
+  console.log(session);
+
+  const handleSignOut = () =>{
+     authClient.signOut()
+  }
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-backdrop-filter:backdrop-blur-md">
@@ -75,8 +85,12 @@ export function Navbar() {
         </nav>
 
         {/* Right: Desktop Action Buttons */}
-        <div className="hidden items-center gap-4 md:flex">
-          <Link
+        <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
+          { session?.user ? <><span className="text-orange-500">Welcome, {session?.user.name}</span> 
+               <Button onClick={handleSignOut} variant={"link"} className=" cursor-pointer hover:bg-red-500 text-white" ><ArrowLeftFromLine /> SingOut</Button>
+           </> : <>
+             <Link
             href="/sign-in"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
@@ -91,10 +105,13 @@ export function Navbar() {
           >
             Get Started
           </Link>
+            </>
+          }
         </div>
 
         {/* Mobile: Hamburger Drawer Trigger */}
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <Link
             href="/sign-up"
             className={cn(
@@ -189,6 +206,13 @@ export function Navbar() {
                       <span>Get Started</span>
                       <ArrowRight className="size-4" />
                     </Link>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/30 px-3 py-1.5">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Switch Mode
+                    </span>
+                    <ThemeToggle />
                   </div>
 
                   <p className="text-center text-xs text-muted-foreground">
