@@ -17,6 +17,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { authClient } from "@/lib/auth-client"
+import { toast } from "@/components/ui/toast"
 
 export default function SignInPage() {
   const [formData, setFormData] = React.useState({
@@ -33,11 +35,25 @@ export default function SignInPage() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit =async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Event handler collecting all form data
     console.log("Sign In Submitted:", formData)
-    // Ready for: authClient.signIn.email({ email: formData.email, password: formData.password })
+    const {data , error} = await authClient.signIn.email({
+         email: formData.email,
+         password: formData.password,
+         callbackURL: "/"
+    })
+    if(data) {
+       console.log(data);
+       toast.add({
+         description:"Sign In successfully!!",
+         type: "success"
+       })
+    }
+    if(error) {
+       console.log(error);
+    }
   }
 
   const handleGoogleSignIn = () => {
