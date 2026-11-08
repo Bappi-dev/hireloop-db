@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Search, MapPin } from "lucide-react"
-import Imagehome from "@/app/assest/globe.png"
+import Imagehome from "@/app/assest/globe (1).png"
 
 import { Button } from "@/components/ui/button"
 
@@ -99,19 +99,19 @@ export default function Banner() {
 
         {/* Hero Globe Visual & Stats */}
         <div className="relative mt-16 w-full max-w-4xl">
-          <div className="relative mx-auto aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-2xl">
+          <div className="relative top-4 mx-auto aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-2xl">
             <Image
               src={Imagehome}
               alt="Global opportunities"
               fill
-              className="object-cover object-top opacity-90 transition-opacity hover:opacity-100"
+              className="object-cover object-top opacity-90 w-full transition-opacity hover:opacity-100"
               priority
             />
             {/* Gradient overlays to blend smoothly into page */}
           </div>
 
-          <div className="relative -mt-12 sm:-mt-20">
-            <p className="text-sm font-normal text-zinc-400 sm:text-base">
+          <div className="relative mt-12 sm:-mt-20">
+            <p className="text-sm text-2xl font-normal text-zinc-400 sm:text-base">
               Assisting over{" "}
               <span className="font-semibold text-white">15,000</span> job seekers
               find their dream positions.
