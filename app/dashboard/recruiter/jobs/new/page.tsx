@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Briefcase, Calendar, MapPin } from "lucide-react"
 import { createJob } from "@/lib/actions/jobs"
 import { toast } from "@/components/ui/toast"
+import { useRouter } from "next/navigation"
 
 
 type JobType = "full-time" | "part-time" | "contract" | "internship"
@@ -69,7 +70,8 @@ export default function NewJobPage() {
         responsibilities: "",
         requirements: "",
     })
-
+    
+    const router = useRouter()
     // Generic flat setter so every field is just setField("key")(value).
     const set =
         <K extends keyof JobFormData>(key: K) =>
@@ -88,6 +90,7 @@ export default function NewJobPage() {
                 description: "create successfully",
                 type: 'success'
             })
+            router.push('/dashboard/recruiter/jobs')
          }
 
     }
