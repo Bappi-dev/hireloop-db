@@ -19,11 +19,7 @@ import { Separator } from "@/components/ui/separator"
 import { authClient } from "@/lib/auth-client"
 import { ThemeToggle } from "@/components/ThemeToggle"
 
-const NAV_LINKS = [
-  { name: "Browse Jobs", href: "/jobs", icon: Briefcase },
-  { name: "Company", href: "/company", icon: Building2 },
-  { name: "Pricing", href: "/pricing", icon: CreditCard },
-]
+
 
 export function Navbar() {
   const pathname = usePathname()
@@ -32,6 +28,14 @@ export function Navbar() {
   const { data: session } = authClient.useSession()
   console.log(session);
 
+  const NAV_LINKS = [
+  { name: "Browse Jobs", href: "/jobs", icon: Briefcase },
+  { name: "Company", href: "/company", icon: Building2 },
+  { name: "Pricing", href: "/pricing", icon: CreditCard },
+  { name: "Dashboard", href: `/dashboard/${session?.user?.role || 'seeker'}`, icon: CreditCard },
+]
+
+  
   const handleSignOut = () =>{
      authClient.signOut()
   }

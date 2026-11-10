@@ -34,20 +34,20 @@ import { toast } from "@/components/ui/toast"
 
 const ROLES = [
   {
-    id: "Seeker" as const,
-    label: "Seeker",
+    id: "seeker" as const,
+    label: "seeker",
     description: "Looking for jobs",
     icon: User,
   },
   {
-    id: "Recruiter" as const,
-    label: "Recruiter",
+    id: "recruiter" as const,
+    label: "recruiter",
     description: "Hiring talent",
     icon: Briefcase,
   },
   {
-    id: "Admin" as const,
-    label: "Admin",
+    id: "admin" as const,
+    label: "admin",
     description: "Platform admin",
     icon: ShieldCheck,
   },
@@ -68,7 +68,7 @@ export default function SignUpPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "Seeker",
+    role:  "Seeker" 
   })
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)

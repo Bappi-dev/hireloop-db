@@ -5,10 +5,13 @@ import FeaturesSection from "@/components/FeaturesSection"
 import PricingSection from "@/components/PricingSection"
 import CtaSection from "@/components/CtaSection"
 import Footer from "@/components/Footer"
+import { Navbar } from "@/components/navbar"
 
 export default function Page() {
   return (
     <div className="flex flex-col overflow-x-hidden bg-background text-foreground">
+
+       <Navbar />
       {/* 1. Hero / Search Banner */}
       <Banner />
 

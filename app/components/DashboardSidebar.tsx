@@ -85,40 +85,26 @@ export const menuItemsByRole: MenuItemsByRole = {
   ],
   recruiter: [
     {
-      name: "Overview",
+      name: "Dashboard",
       url: "/dashboard/recruiter",
       icon: LayoutDashboard,
     },
     {
-      name: "Post a Job",
-      url: "/dashboard/recruiter/post-job",
+      name: "Manage jobs",
+      url: "/dashboard/recruiter/jobs",
       icon: PlusCircle,
     },
     {
-      name: "Job Listings",
+      name: "Add jobs",
+      url: "/dashboard/recruiter/jobs/new",
+      icon: PlusCircle,
+    },
+    {
+      name: "Applications",
       url: "/dashboard/recruiter/jobs",
       icon: Briefcase,
     },
-    {
-      name: "Candidates",
-      url: "/dashboard/recruiter/candidates",
-      icon: Users,
-    },
-    {
-      name: "Talent Search",
-      url: "/dashboard/recruiter/talent-search",
-      icon: Search,
-    },
-    {
-      name: "Company Profile",
-      url: "/dashboard/recruiter/company",
-      icon: Building2,
-    },
-    {
-      name: "Messages",
-      url: "/dashboard/recruiter/messages",
-      icon: MessageSquare,
-    },
+ 
     {
       name: "Settings",
       url: "/dashboard/recruiter/settings",
